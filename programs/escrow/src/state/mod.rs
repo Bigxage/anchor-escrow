@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[account]
-#[derive(Initspace)]
+#[derive(InitSpace)]
 
 pub struct Escrow {
     pub seed: u64,
@@ -9,5 +9,5 @@ pub struct Escrow {
     pub mint_a: Pubkey,
     pub mint_b: Pubkey,
     pub receive: u64,
-    pub bump: u8,
+    pub bump: u8
 }

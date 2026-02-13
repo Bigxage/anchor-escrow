@@ -1,9 +1,10 @@
 use anchor_lang::prelude::*;
+
+use crate::Escrow;
 use anchor_spl::{
     token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked};
     associated_token::AssociatedToken,
-}
-use crate::Escrow;
+};
 
 #[derive(Accounts)]
 #[instruction(seed: u64,)]
@@ -24,9 +25,9 @@ pub struct Make<'info> {
     #[account(
         init,
         payer = maker,
-        seeds = [b"escrow", maker.key().as_ref(), seed.to_le_bytes().as_ref()]
+        seeds = [b"escrow", maker.key().as_ref(), seed.to_le_bytes().as_ref()],
         space = Escrow::DISCRIMINATOR.len() + Escrow::INIT_SPACE,
-        bump,
+        bump
     )]
     pub escrow: Account<'info, Escrow>,
     #[account(
@@ -38,7 +39,7 @@ pub struct Make<'info> {
     )]
     
     pub vault: InterfaceAccount<info, TokenAccount>,
-    pub associated_token_program:: Program<'info, AssociatedToken>
+    pub associated_token_program:: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>
 }
@@ -46,26 +47,25 @@ pub struct Make<'info> {
 impl<'info> Make<'info> {
     pub fn init_escrow(&mut self, seed: u64, receive: u64, bump: &MakeBumps) -> Result<()> {
         self.escrow.set_inner(Escrow {
-            seeds,
+            seed,
             maker: self.maker.key(),
             mint_a: self.mint_a.key(),
             mint_b: self.mint_b.key(),
             receive,
             bump: bumps.escrow
         });
-
         Ok(())
     }
 
     pub fn deposit(&mut self, deposit: u64) -> Result<()> {
-        let transfer_accounts = TransferChecked <'_> = TransferChecked {
+        let transfer_account = TransferChecked {
             from: self.maker_ata_a.to_account_info(),
             mint: self.mint_a.to_account_info(),
             to: self.vault.to_account_info(),
             authority: self.maker.to_account_info(),
         };
 
-        let cpi_ctx: CpiContext<'_, '_, '_, 'info, CpiContext::new self.token_program.to_account_info() transfer_accounts
+        let cpi_ctx: CpiContext::new (self.token_program.to_account_info(), transfer_accounts);
 
         transfer_checked(cpi_ctx, amount: deposit, self.mint_a.decimals);
         Ok(())
