@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::Escrow;
 use anchor_spl::{
-    token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked};
+    token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked},
     associated_token::AssociatedToken,
 };
 
@@ -38,8 +38,8 @@ pub struct Make<'info> {
         associated_token::token_program = token_program
     )]
     
-    pub vault: InterfaceAccount<info, TokenAccount>,
-    pub associated_token_program:: Program<'info, AssociatedToken>,
+    pub vault: InterfaceAccount<'info, TokenAccount>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>
 }
@@ -52,7 +52,7 @@ impl<'info> Make<'info> {
             mint_a: self.mint_a.key(),
             mint_b: self.mint_b.key(),
             receive,
-            bump: bumps.escrow
+            bump: bump.escrow
         });
         Ok(())
     }
@@ -65,9 +65,12 @@ impl<'info> Make<'info> {
             authority: self.maker.to_account_info(),
         };
 
-        let cpi_ctx: CpiContext::new (self.token_program.to_account_info(), transfer_accounts);
+        let cpi_ctx = CpiContext::new(
+            self.token_program.to_account_info(),
+            transfer_account
+        );
 
-        transfer_checked(cpi_ctx, amount: deposit, self.mint_a.decimals);
+        transfer_checked(cpi_ctx, deposit, self.mint_a.decimals)?;
         Ok(())
     }
 }

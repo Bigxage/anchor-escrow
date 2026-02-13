@@ -81,6 +81,6 @@ impl<'info> Refund<'info> {
             signer_seeds,
         );
 
-        close_account(close_cpi_ctx);
+        close_account(close_cpi_ctx)
     }
 }
