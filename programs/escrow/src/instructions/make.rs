@@ -7,7 +7,7 @@ use anchor_spl::{
 };
 
 #[derive(Accounts)]
-#[instruction(seed: u64,)]
+#[instruction(seed: u64)]
 pub struct Make<'info> {
     #[account(mut)]
     pub maker: Signer<'info>,
