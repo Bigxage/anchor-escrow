@@ -5,3 +5,33 @@ target
 node_modules
 test-ledger
 .yarn
+# Anchor / Rust
+target/
+**/target/
+
+# Solana
+test-ledger/
+.anchor/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+
+# Build artifacts
+dist/
+coverage/
+
+# Large archives
+*.tar
+*.tar.bz2
+*.tar.gz
+*.zip
+
+# IDE
+.vscode/
+.idea/
